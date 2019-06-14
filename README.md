@@ -15,7 +15,7 @@ Make sure all dependencies have been installed before moving on:
 Via Composer:
 
 ``` bash
-$ composer require interconnectit/larave-local-server --dev
+$ composer require interconnectit/laravel-local-server --dev
 ```
 
 ## Usage
