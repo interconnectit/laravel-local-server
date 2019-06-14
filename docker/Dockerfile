@@ -1,4 +1,9 @@
-FROM php:fpm-alpine
+FROM nginx:alpine as nginx
+
+# Add custom vhost
+COPY conf/vhost.conf /etc/nginx/conf.d
+
+FROM php:fpm-alpine as php
 
 # Apply custom php configuration
 COPY conf/php.ini /usr/local/etc/php
