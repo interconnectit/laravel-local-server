@@ -1,5 +1,5 @@
 {
-    "name": "interconnectit/local-server",
+    "name": "interconnectit/laravel-local-server",
     "type": "composer-plugin",
     "description": "Laravel local server",
     "keywords": [
