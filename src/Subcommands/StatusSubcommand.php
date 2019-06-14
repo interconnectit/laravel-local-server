@@ -40,7 +40,9 @@ final class StatusSubcommand
     {
         $compose = new Process('docker-compose ps', 'vendor/interconnectit/laravel-local-server/docker', [
             'COMPOSE_PROJECT_NAME' => basename(getcwd()),
+            'DOCKER_HOST'          => getenv('DOCKER_HOST'),
             'VOLUME'               => getcwd(),
+            'PATH'                 => getenv('PATH'),
         ]);
         $compose->setTimeout(0);
         $compose->run(function ($_, $buffer) {
