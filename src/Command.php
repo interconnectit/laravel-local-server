@@ -21,6 +21,7 @@ final class Command extends BaseCommand
         'destroy' => Subcommands\DestroySubcommand::class,
         'status'  => Subcommands\StatusSubcommand::class,
         'logs'    => Subcommands\LogsSubcommand::class,
+        'artisan' => Subcommands\ArtisanSubcommand::class,
     ];
 
     /**
@@ -31,7 +32,7 @@ final class Command extends BaseCommand
         $this->setName('local-server')
              ->setDescription('Run the local server.')
              ->setDefinition([
-                 new InputArgument('subcommand', InputArgument::REQUIRED, 'start, stop, destroy, status, logs'),
+                 new InputArgument('subcommand', InputArgument::REQUIRED, 'start, stop, destroy, status, logs, artisan'),
                  new InputArgument('options', InputArgument::IS_ARRAY),
              ])
              ->setHelp(
@@ -48,6 +49,8 @@ View the local server status:
     status
 View the local server logs:
     logs <service>      <service> can be nginx, php, mysql, redis
+Run artisan command:
+    artisan -- <command>    eg: artisan -- migrate
 EOT
              );
     }
