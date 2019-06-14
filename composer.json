@@ -1,0 +1,45 @@
+{
+    "name": "interconnectit/local-server",
+    "type": "composer-plugin",
+    "description": "Laravel local server",
+    "keywords": [
+        "laravel",
+        "local server"
+    ],
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/interconnectit/laravel-local-server/issues",
+        "source": "https://github.com/interconnectit/laravel-local-server"
+    },
+    "authors": [
+        {
+            "name": "interconnect/it",
+            "email": "support@interconnectit.com",
+            "homepage": "https://interconnectit.com/"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "composer-plugin-api": "^1.1"
+    },
+    "require-dev": {
+        "composer/composer": "^1.8",
+        "squizlabs/php_codesniffer": "^3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "InterconnectIt\\LaravelLocalServer\\": "src/"
+        }
+    },
+    "extra": {
+        "class": "InterconnectIt\\LaravelLocalServer\\Plugin"
+    },
+    "scripts": {
+        "lint": [
+            "phpcs -p --standard=psr2 src"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
