@@ -21,14 +21,17 @@ FROM php:fpm-alpine as backend
 
 WORKDIR /code
 
-RUN apk add --no-cache --virtual .persistent-deps imagemagick
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS imagemagick-dev
+RUN apk add --no-cache --virtual .persistent-deps libjpeg-turbo libpng libwebp freetype
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libjpeg-turbo-dev libpng-dev libwebp-dev freetype-dev
 
-RUN docker-php-ext-install bcmath opcache pdo_mysql
+# Installing GD
+RUN docker-php-ext-configure gd \
+    --with-jpeg-dir=/usr/include \
+    --with-png-dir=/usr/include \
+    --with-webp-dir=/usr/include \
+    --with-freetype-dir=/usr/include
 
-# Installing imagick
-RUN	pecl install imagick
-RUN docker-php-ext-enable imagick
+RUN docker-php-ext-install bcmath gd opcache pdo_mysql
 
 RUN apk del .build-deps
 
