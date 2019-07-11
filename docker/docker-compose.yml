@@ -19,7 +19,7 @@ services:
     nginx:
         build:
             context: .
-            target: nginx
+            target: frontend
         container_name: ${COMPOSE_PROJECT_NAME:-default}-nginx
         volumes:
             - ./public:/code/public:cached
