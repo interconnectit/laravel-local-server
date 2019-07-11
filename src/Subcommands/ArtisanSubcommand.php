@@ -43,7 +43,7 @@ final class ArtisanSubcommand
         $hasStdout = !posix_isatty(STDOUT);
 
         $command = sprintf(
-            'cd %s; COMPOSE_PROJECT_NAME=%s VOLUME=%s docker-compose exec %s -u nobody php /code/artisan %s',
+            'cd %s; COMPOSE_PROJECT_NAME=%s VOLUME=%s docker-compose exec %s -u nobody php artisan %s',
             'vendor/interconnectit/laravel-local-server/docker',
             basename(getcwd()),
             getcwd(),
