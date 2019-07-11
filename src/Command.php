@@ -22,6 +22,7 @@ final class Command extends BaseCommand
         'status'  => Subcommands\StatusSubcommand::class,
         'logs'    => Subcommands\LogsSubcommand::class,
         'artisan' => Subcommands\ArtisanSubcommand::class,
+        'build'   => Subcommands\BuildSubcommand::class,
     ];
 
     /**
