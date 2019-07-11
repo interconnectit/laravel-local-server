@@ -16,13 +16,13 @@ final class Command extends BaseCommand
      * @var array
      */
     private $subcommands = [
+        'build'   => Subcommands\BuildSubcommand::class,
         'start'   => Subcommands\StartSubcommand::class,
         'stop'    => Subcommands\StopSubcommand::class,
         'destroy' => Subcommands\DestroySubcommand::class,
         'status'  => Subcommands\StatusSubcommand::class,
         'logs'    => Subcommands\LogsSubcommand::class,
         'artisan' => Subcommands\ArtisanSubcommand::class,
-        'build'   => Subcommands\BuildSubcommand::class,
     ];
 
     /**
@@ -40,6 +40,8 @@ final class Command extends BaseCommand
                  <<<EOT
 Run the local server.
 
+Build the local server:
+    build
 Start the local server:
     start
 Stop the local server:
