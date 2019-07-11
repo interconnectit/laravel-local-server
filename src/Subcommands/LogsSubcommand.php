@@ -42,9 +42,12 @@ final class LogsSubcommand
 
         $compose = new Process('docker-compose logs -f ' . $service, 'vendor/interconnectit/laravel-local-server/docker', [
             'COMPOSE_PROJECT_NAME' => basename(getcwd()),
-            'DOCKER_HOST'          => getenv('DOCKER_HOST'),
             'VOLUME'               => getcwd(),
             'PATH'                 => getenv('PATH'),
+
+            // Windows required env variables
+            'TEMP'                 => getenv('TEMP'),
+            'SystemRoot'           => getenv('SystemRoot'),
         ]);
         $compose->setTimeout(0);
         $compose->run(function ($_, $buffer) {
