@@ -59,7 +59,9 @@ final class StartSubcommand
         }
 
         $output->writeln('Started.');
+        $output->writeln('');
         $output->writeln('To access site please visit: http://' . basename(getcwd()) . '.localtest.me/');
         $output->writeln('To access phpmyadmin please visit: http://phpmyadmin.' . basename(getcwd()) . '.localtest.me/');
+        $output->writeln('To access mailhog please visit: http://mailhog.' . basename(getcwd()) . '.localtest.me/');
     }
 }
