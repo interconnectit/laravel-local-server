@@ -10,12 +10,16 @@ COPY conf/traefik.toml /etc/traefik
 #
 FROM nginx:alpine as frontend
 
+WORKDIR /code
+
 COPY conf/default.conf /etc/nginx/conf.d
 
 #
 # Backend
 #
 FROM php:fpm-alpine as backend
+
+WORKDIR /code
 
 RUN apk add --no-cache --virtual .persistent-deps imagemagick
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS imagemagick-dev
@@ -35,6 +39,8 @@ COPY conf/opcache.ini /usr/local/etc/php/conf.d
 # Artisan
 #
 FROM php:cli-alpine as artisan
+
+WORKDIR /code
 
 RUN apk add --no-cache --virtual .persistent-deps libzip
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libzip-dev
