@@ -22,7 +22,7 @@ services:
             target: frontend
         container_name: ${COMPOSE_PROJECT_NAME:-default}-nginx
         volumes:
-            - ${VOLUME}/public:/code/public:cached
+            - ${VOLUME}:/code:cached
             - ${VOLUME}/storage/app/public:/code/public/storage:cached
         networks:
             - default
