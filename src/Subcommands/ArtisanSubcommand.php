@@ -38,19 +38,19 @@ final class ArtisanSubcommand
     public function __invoke(InputInterface $input, OutputInterface $output): void
     {
         $options = $input->getArgument('options');
+        $command = implode(' ', $options);
 
-        $hasStdin  = !posix_isatty(STDIN);
-        $hasStdout = !posix_isatty(STDOUT);
-
-        $command = sprintf(
-            'cd %s; COMPOSE_PROJECT_NAME=%s VOLUME=%s docker-compose exec %s -u nobody php artisan %s',
-            'vendor/interconnectit/laravel-local-server/docker',
-            basename(getcwd()),
-            getcwd(),
-            $hasStdin || $hasStdout ? '-T' : '',
-            implode(' ', $options)
-        );
-
-        passthru($command, $output);
+        $compose = new Process('docker-compose exec -T -u nobody php php artisan ' . $command, 'vendor/interconnectit/laravel-local-server/docker', [
+            'COMPOSE_PROJECT_NAME' => basename(getcwd()),
+            'VOLUME'               => getcwd(),
+            'PATH'                 => getenv('PATH'),
+            // Windows required env variables
+            'TEMP'                 => getenv('TEMP'),
+            'SystemRoot'           => getenv('SystemRoot'),
+        ]);
+        $compose->setTimeout(0);
+        $compose->run(function ($_, $buffer) {
+            echo $buffer;
+        });
     }
 }
