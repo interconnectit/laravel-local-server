@@ -20,7 +20,7 @@ abstract class Subcommand
 
     protected function runProcess(string $command): int
     {
-        $process = new Process(
+        $process = Process::fromShellCommandline(
             $command,
             $this->getConfigDirectory(),
             $this->getEnvironmentVariables()

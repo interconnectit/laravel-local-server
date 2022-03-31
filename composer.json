@@ -21,7 +21,7 @@
         "symfony/filesystem": "^5.1"
     },
     "require-dev": {
-        "composer/composer": "^2.0",
+        "composer/composer": "^2.3",
         "phpstan/phpstan": "^0.12.30",
         "squizlabs/php_codesniffer": "^3.5"
     },

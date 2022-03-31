@@ -37,7 +37,7 @@ class StartSubcommand extends Subcommand
     {
         $requiredNetwork = 'laravel';
 
-        $process = new Process(
+        $process = Process::fromShellCommandline(
             'docker network list --format="{{.Name}}"',
             $this->getConfigDirectory(),
             $this->getEnvironmentVariables()
