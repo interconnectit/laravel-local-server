@@ -8,20 +8,24 @@ use Composer\Plugin\Capability\CommandProvider as ComposerCommandProvider;
 use Composer\Plugin\Capable;
 use Composer\Plugin\PluginInterface;
 
-final class Plugin implements PluginInterface, Capable
+class Plugin implements PluginInterface, Capable
 {
-    /**
-     * @inheritDoc
-     */
-    public function activate(Composer $composer, IOInterface $io)
+    public function activate(Composer $composer, IOInterface $io): void
     {
         //
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getCapabilities()
+    public function deactivate(Composer $composer, IOInterface $io): void
+    {
+        //
+    }
+
+    public function uninstall(Composer $composer, IOInterface $io): void
+    {
+        //
+    }
+
+    public function getCapabilities(): array
     {
         return [
             ComposerCommandProvider::class => CommandProvider::class,

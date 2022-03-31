@@ -8,69 +8,67 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class Command extends BaseCommand
+class Command extends BaseCommand
 {
-    /**
-     * Registered subcommands.
-     *
-     * @var array
-     */
-    private $subcommands = [
-        'build'   => Subcommands\BuildSubcommand::class,
-        'start'   => Subcommands\StartSubcommand::class,
-        'stop'    => Subcommands\StopSubcommand::class,
-        'destroy' => Subcommands\DestroySubcommand::class,
-        'status'  => Subcommands\StatusSubcommand::class,
-        'logs'    => Subcommands\LogsSubcommand::class,
+    protected $subcommands = [
         'artisan' => Subcommands\ArtisanSubcommand::class,
+        'build'   => Subcommands\BuildSubcommand::class,
+        'destroy' => Subcommands\DestroySubcommand::class,
+        'eject'   => Subcommands\EjectSubcommand::class,
+        'logs'    => Subcommands\LogsSubcommand::class,
+        'start'   => Subcommands\StartSubcommand::class,
+        'status'  => Subcommands\StatusSubcommand::class,
+        'stop'    => Subcommands\StopSubcommand::class,
     ];
 
-    /**
-     * @inheritDoc
-     */
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName('local-server')
-             ->setDescription('Run the local server.')
-             ->setDefinition([
-                 new InputArgument('subcommand', InputArgument::REQUIRED, 'start, stop, destroy, status, logs, artisan'),
-                 new InputArgument('options', InputArgument::IS_ARRAY),
-             ])
-             ->setHelp(
-                 <<<EOT
+        $this
+            ->setName('local-server')
+            ->setDescription('Laravel local server')
+            ->setDefinition([
+                new InputArgument('subcommand', InputArgument::REQUIRED, implode(', ', array_keys($this->subcommands))),
+                new InputArgument('options', InputArgument::IS_ARRAY),
+            ])
+            ->setAliases(['local-server'])
+            ->setHelp(
+                <<<EOT
 Run the local server.
 
-Build the local server:
-    build
 Start the local server:
     start
 Stop the local server:
     stop
 Destroy the local server:
     destroy
-View the local server status:
+View the status of the local server:
     status
-View the local server logs:
-    logs <service>      <service> can be nginx, php, mysql, redis
+View the logs
+    logs <service>                <service> can be php, nginx, mysql, redis
 Run artisan command:
-    artisan -- <command>    eg: artisan -- migrate
+    artisan -- <command>          eg: artisan -- migrate
 EOT
-             );
+            );
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function isProxyCommand(): bool
+    {
+        return true;
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $subcommand = $input->getArgument('subcommand');
 
         if (!isset($this->subcommands[$subcommand])) {
-            throw new InvalidArgumentException('Invalid subcommand given: ' . $subcommand);
+            throw new InvalidArgumentException(sprintf('Invalid subcommand given: %s', $subcommand));
         }
 
         $subcommandClass    = $this->subcommands[$subcommand];
         $subcommandInstance = new $subcommandClass($this->getApplication());
-        $subcommandInstance($input, $output);
+
+        $exitCode = $subcommandInstance($input, $output);
+
+        return $exitCode;
     }
 }

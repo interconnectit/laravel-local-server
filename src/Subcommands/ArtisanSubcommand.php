@@ -2,56 +2,18 @@
 
 namespace InterconnectIt\LaravelLocalServer\Subcommands;
 
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 
-final class ArtisanSubcommand
+class ArtisanSubcommand extends Subcommand
 {
-    /**
-     * The application instance.
-     *
-     * @var Application
-     */
-    private $application;
+    const COMMAND = 'docker-compose exec -T -u nobody backend php artisan %s';
 
-    /**
-     * Create a subcommand instance.
-     *
-     * @param Application $application
-     *
-     * @return void
-     */
-    public function __construct(Application $application)
-    {
-        $this->application = $application;
-    }
-
-    /**
-     * Invoke the subcommand.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return void
-     */
-    public function __invoke(InputInterface $input, OutputInterface $output): void
+    public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $options = $input->getArgument('options');
-        $command = implode(' ', $options);
+        $options = implode(' ', $options);
 
-        $compose = new Process('docker-compose exec -T -u nobody php php artisan ' . $command, 'vendor/interconnectit/laravel-local-server/docker', [
-            'COMPOSE_PROJECT_NAME' => basename(getcwd()),
-            'VOLUME'               => getcwd(),
-            'PATH'                 => getenv('PATH'),
-            // Windows required env variables
-            'TEMP'                 => getenv('TEMP'),
-            'SystemRoot'           => getenv('SystemRoot'),
-        ]);
-        $compose->setTimeout(0);
-        $compose->run(function ($_, $buffer) {
-            echo $buffer;
-        });
+        return $this->runProcess(sprintf(static::COMMAND, $options));
     }
 }

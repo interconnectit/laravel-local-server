@@ -2,66 +2,57 @@
 
 namespace InterconnectIt\LaravelLocalServer\Subcommands;
 
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
-final class StartSubcommand
+class StartSubcommand extends Subcommand
 {
-    /**
-     * The application instance.
-     *
-     * @var Application
-     */
-    private $application;
+    const COMMAND = 'docker-compose up -d --remove-orphans';
 
-    /**
-     * Create a subcommand instance.
-     *
-     * @param Application $application
-     *
-     * @return void
-     */
-    public function __construct(Application $application)
+    public function __invoke(InputInterface $input, OutputInterface $output): int
     {
-        $this->application = $application;
+        $this->ensureNetworkPresence($output);
+
+        $output->writeln('<info>Starting...</>');
+
+        $isStartupFailed = $this->runProcess(static::COMMAND);
+
+        if ($isStartupFailed) {
+            $output->writeln('<error>Sorry, the local server is failed to start.</>');
+
+            return $isStartupFailed;
+        }
+
+        $siteUrl = sprintf('http://%s.localtest.me/', $this->getProjectName());
+
+        $output->writeln('');
+        $output->writeln('<info>Your local server is ready!</>');
+        $output->writeln(sprintf('<info>To access your site visit:</> <comment>%s</>', $siteUrl));
+
+        return $isStartupFailed;
     }
 
-    /**
-     * Invoke the subcommand.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return void
-     */
-    public function __invoke(InputInterface $input, OutputInterface $output): void
+    protected function ensureNetworkPresence(OutputInterface $output): void
     {
-        $output->writeln('Starting...');
+        $requiredNetwork = 'laravel';
 
-        $compose = new Process('docker-compose up -d', 'vendor/interconnectit/laravel-local-server/docker', [
-            'COMPOSE_PROJECT_NAME' => basename(getcwd()),
-            'VOLUME'               => getcwd(),
-            'PATH'                 => getenv('PATH'),
+        $process = new Process(
+            'docker network list --format="{{.Name}}"',
+            $this->getConfigDirectory(),
+            $this->getEnvironmentVariables()
+        );
 
-            // Windows required env variables
-            'TEMP'                 => getenv('TEMP'),
-            'SystemRoot'           => getenv('SystemRoot'),
-        ]);
-        $compose->setTimeout(0);
-        $failed = $compose->run(function ($_, $buffer) {
-            echo $buffer;
-        });
+        $process->run();
 
-        if ($failed) {
+        if (strpos($process->getOutput(), $requiredNetwork) !== false) {
             return;
         }
 
-        $output->writeln('Started.');
-        $output->writeln('');
-        $output->writeln('To access site please visit: http://' . basename(getcwd()) . '.localtest.me/');
-        $output->writeln('To access phpmyadmin please visit: http://phpmyadmin.' . basename(getcwd()) . '.localtest.me/');
-        $output->writeln('To access mailhog please visit: http://mailhog.' . basename(getcwd()) . '.localtest.me/');
+        $isFailed = $this->runProcess(sprintf('docker network create %s', $requiredNetwork));
+
+        if ($isFailed) {
+            $output->writeln('<error>Sorry, the local server is failed to setup the required network.</>');
+        }
     }
 }

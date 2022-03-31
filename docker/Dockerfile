@@ -1,7 +1,9 @@
 #
 # Proxy
 #
-FROM traefik as proxy
+FROM traefik:alpine as proxy
+
+WORKDIR /code
 
 COPY conf/traefik.toml /etc/traefik
 
@@ -21,17 +23,12 @@ FROM php:fpm-alpine as backend
 
 WORKDIR /code
 
-RUN apk add --no-cache --virtual .persistent-deps libjpeg-turbo libpng libwebp freetype
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libjpeg-turbo-dev libpng-dev libwebp-dev freetype-dev
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
 
-# Installing GD
-RUN docker-php-ext-configure gd \
-    --with-jpeg-dir=/usr/include \
-    --with-png-dir=/usr/include \
-    --with-webp-dir=/usr/include \
-    --with-freetype-dir=/usr/include
+RUN docker-php-ext-install bcmath opcache pdo_mysql
 
-RUN docker-php-ext-install bcmath gd opcache pdo_mysql
+RUN pecl install redis
+RUN docker-php-ext-enable redis
 
 RUN apk del .build-deps
 
@@ -45,13 +42,13 @@ FROM php:cli-alpine as artisan
 
 WORKDIR /code
 
-RUN apk add --no-cache --virtual .persistent-deps libzip
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libzip-dev
+COPY scheduler /usr/local/bin
+
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
 
 RUN docker-php-ext-install bcmath pdo_mysql
 
-# Installing zip
-RUN docker-php-ext-configure zip --with-libzip
-RUN docker-php-ext-install zip
+RUN pecl install redis
+RUN docker-php-ext-enable redis
 
 RUN apk del .build-deps

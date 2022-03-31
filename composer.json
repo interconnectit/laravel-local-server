@@ -1,16 +1,13 @@
 {
     "name": "interconnectit/laravel-local-server",
     "type": "composer-plugin",
-    "description": "Laravel local server",
+    "description": "The local server package providers a local development environment for Laravel projects.",
     "keywords": [
         "laravel",
-        "local server"
+        "docker"
     ],
+    "homepage": "https://interconnectit.com",
     "license": "MIT",
-    "support": {
-        "issues": "https://github.com/interconnectit/laravel-local-server/issues",
-        "source": "https://github.com/interconnectit/laravel-local-server"
-    },
     "authors": [
         {
             "name": "interconnect/it",
@@ -19,25 +16,30 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-        "composer-plugin-api": "^1.1"
+        "php": "^7.3",
+        "composer-plugin-api": "^2.0",
+        "symfony/filesystem": "^5.1"
     },
     "require-dev": {
-        "composer/composer": "^1.8",
-        "squizlabs/php_codesniffer": "^3.4"
+        "composer/composer": "^2.0",
+        "phpstan/phpstan": "^0.12.30",
+        "squizlabs/php_codesniffer": "^3.5"
     },
     "autoload": {
         "psr-4": {
-            "InterconnectIt\\LaravelLocalServer\\": "src/"
+            "InterconnectIt\\LaravelLocalServer\\": "src"
         }
     },
-    "extra": {
-        "class": "InterconnectIt\\LaravelLocalServer\\Plugin"
-    },
     "scripts": {
+        "analyse": [
+            "phpstan analyse -l 0 src"
+        ],
         "lint": [
             "phpcs -p --standard=psr2 src"
         ]
+    },
+    "extra": {
+        "class": "InterconnectIt\\LaravelLocalServer\\Plugin"
     },
     "config": {
         "sort-packages": true

@@ -4,12 +4,9 @@ namespace InterconnectIt\LaravelLocalServer;
 
 use Composer\Plugin\Capability\CommandProvider as ComposerCommandProvider;
 
-final class CommandProvider implements ComposerCommandProvider
+class CommandProvider implements ComposerCommandProvider
 {
-    /**
-     * @inheritDoc
-     */
-    public function getCommands()
+    public function getCommands(): array
     {
         return [
             new Command,
