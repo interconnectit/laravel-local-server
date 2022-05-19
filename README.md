@@ -15,7 +15,7 @@ Make sure all dependencies have been installed before moving on:
 You can install the package via composer:
 
 ```bash
-composer require nasyrov/laravel-local-server --dev
+composer require interconnectit/laravel-local-server --dev
 ```
 
 ## Usage
