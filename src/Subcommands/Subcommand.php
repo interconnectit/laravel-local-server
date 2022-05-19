@@ -39,7 +39,7 @@ abstract class Subcommand
     {
         return is_dir(getcwd().'/docker')
             ? getcwd().'/docker'
-            : getcwd().'/vendor/nasyrov/laravel-local-server/docker';
+            : getcwd().'/vendor/interconnectit/laravel-local-server/docker';
     }
 
     protected function getEnvironmentVariables(): array
