@@ -23,9 +23,13 @@ FROM php:fpm-alpine as backend
 
 WORKDIR /code
 
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS imagemagick-dev
 
 RUN docker-php-ext-install bcmath opcache pdo_mysql
+
+RUN pecl install imagick
+RUN docker-php-ext-enable imagick
+RUN apk add --no-cache --virtual .imagick-runtime-deps imagemagick
 
 RUN pecl install redis
 RUN docker-php-ext-enable redis
