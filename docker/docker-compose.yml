@@ -56,7 +56,7 @@ services:
         build:
             context: .
             target: artisan
-        command: php artisan queue:work
+        command: php artisan horizon
         container_name: ${COMPOSE_PROJECT_NAME:-default}-worker
         volumes:
             - ${VOLUME}:/code:cached

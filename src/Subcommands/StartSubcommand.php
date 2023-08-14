@@ -26,11 +26,13 @@ class StartSubcommand extends Subcommand
 
         $siteUrl = sprintf('http://%s.localtest.me/', $this->getProjectName());
         $databaseUrl = sprintf('http://phpmyadmin.%s.localtest.me/', $this->getProjectName());
+        $mailhogUrl = sprintf('http://mailhog.%s.localtest.me/', $this->getProjectName());
 
         $output->writeln('');
         $output->writeln('<info>Your local server is ready!</>');
         $output->writeln(sprintf('<info>To access your site visit:</> <comment>%s</>', $siteUrl));
         $output->writeln(sprintf('<info>To access your database visit:</> <comment>%s</>', $databaseUrl));
+        $output->writeln(sprintf('<info>To access your mail inbox visit:</> <comment>%s</>', $mailhogUrl));
 
         return $isStartupFailed;
     }
