@@ -27,10 +27,13 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS imagemagick-dev
 
 RUN apk add icu-dev
 
-RUN docker-php-ext-install bcmath opcache pdo_mysql
+RUN docker-php-ext-install bcmath opcache pdo_mysql pcntl
 
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
 RUN docker-php-ext-enable intl
+
+RUN docker-php-ext-configure pcntl
+RUN docker-php-ext-enable pcntl
 
 RUN pecl install imagick
 RUN docker-php-ext-enable imagick
@@ -55,7 +58,10 @@ COPY scheduler /usr/local/bin
 
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
 
-RUN docker-php-ext-install bcmath pdo_mysql
+RUN docker-php-ext-install bcmath pdo_mysql pcntl
+
+RUN docker-php-ext-configure pcntl
+RUN docker-php-ext-enable pcntl
 
 RUN pecl install redis
 RUN docker-php-ext-enable redis
