@@ -19,7 +19,7 @@ COPY conf/default.conf /etc/nginx/conf.d
 #
 # Backend
 #
-FROM php:fpm-alpine as backend
+FROM php:8.2-fpm-alpine as backend
 
 WORKDIR /code
 
@@ -27,13 +27,18 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS imagemagick-dev
 
 RUN apk add icu-dev
 
-RUN docker-php-ext-install bcmath opcache pdo_mysql pcntl
+RUN docker-php-ext-install bcmath opcache pdo_mysql pcntl exif
+
+RUN docker-php-ext-configure exif
+RUN docker-php-ext-enable exif
 
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
 RUN docker-php-ext-enable intl
 
 RUN docker-php-ext-configure pcntl
 RUN docker-php-ext-enable pcntl
+
+RUN pecl channel-update pecl.php.net
 
 RUN pecl install imagick
 RUN docker-php-ext-enable imagick
@@ -50,7 +55,7 @@ COPY conf/opcache.ini /usr/local/etc/php/conf.d
 #
 # Artisan
 #
-FROM php:cli-alpine as artisan
+FROM php:8.2-cli-alpine as artisan
 
 WORKDIR /code
 
@@ -58,7 +63,10 @@ COPY scheduler /usr/local/bin
 
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
 
-RUN docker-php-ext-install bcmath pdo_mysql pcntl
+RUN docker-php-ext-install bcmath pdo_mysql pcntl exif
+
+RUN docker-php-ext-configure exif
+RUN docker-php-ext-enable exif
 
 RUN docker-php-ext-configure pcntl
 RUN docker-php-ext-enable pcntl
