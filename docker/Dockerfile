@@ -71,6 +71,8 @@ RUN docker-php-ext-enable exif
 RUN docker-php-ext-configure pcntl
 RUN docker-php-ext-enable pcntl
 
+RUN pecl channel-update pecl.php.net
+
 RUN pecl install redis
 RUN docker-php-ext-enable redis
 
