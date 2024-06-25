@@ -38,6 +38,7 @@ RUN docker-php-ext-enable intl
 RUN docker-php-ext-configure pcntl
 RUN docker-php-ext-enable pcntl
 
+RUN pear update-channels
 RUN pecl channel-update pecl.php.net
 
 RUN pecl install imagick
@@ -71,6 +72,7 @@ RUN docker-php-ext-enable exif
 RUN docker-php-ext-configure pcntl
 RUN docker-php-ext-enable pcntl
 
+RUN pear update-channels
 RUN pecl channel-update pecl.php.net
 
 RUN pecl install redis
