@@ -1,7 +1,6 @@
 # Laravel Local Server
 
 The local server package providers a local development environment for Laravel projects. It is built on a containerized architecture using Docker images and Docker Compose to provide drop-in replacements for most components of the cloud infrastructure.
-here is an edit to test packages link
 
 ## Requirements
 
@@ -15,15 +14,60 @@ Make sure all dependencies have been installed before moving on:
 
 You can install the package via composer:
 
+Add the following to your composer.json repositories 
+```bash
+"type": "composer",
+"url": "https://packages.interconnectit.com"
+```
+
+Then run this command in your project directory.
 ```bash
 composer require interconnectit/laravel-local-server --dev
 ```
 
 ## Usage
 
-The local server uses the command line via the `composer` command.
+### Env Vars
+- Set your `APP_URL` along the lines of `http://blog.localtest.me/`
+- Set your database connections 
+```dotenv
+  DB_CONNECTION=mysql
+  DB_HOST=mysql
+  DB_PORT=3306
+  DB_DATABASE=laravel
+  DB_USERNAME=laravel
+  DB_PASSWORD=laravel
+ ```
+- Set your Redis
+```dotenv
+REDIS_HOST=redis
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
+- Set your drivers and queue vars
+```dotenv
+BROADCAST_DRIVER=redis
+CACHE_DRIVER=redis
+QUEUE_CONNECTION=redis
+SESSION_DRIVER=redis
+```
+- Set your mailer
+```dotenv
+MAIL_MAILER=smtp
+MAIL_HOST=mailhog
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS=test@email.com
+MAIL_FROM_NAME="${APP_NAME}"
+```
 
-Navigate your shell to your project's directory. You should already have installed Laravel by running `laravel new` or `composer create-project` but if not, do so now. See [Installing Laravel](https://laravel.com/docs/master#installing-laravel).
+### Artisan Commands
+The local server uses the command line via the `composer` command.
+`php artisan` commands are replaced with `composer local-server artisan`. This is especially important for database related commands
+
+Navigate to your shell to your project's directory. You should already have installed Laravel by running `laravel new` or `composer create-project` but if not, do so now. See [Installing Laravel](https://laravel.com/docs/master#installing-laravel).
 
 ### Starting the local server
 
@@ -94,18 +138,9 @@ See custom [recipes](../../wiki/Recipes).
 composer test
 ```
 
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
 ## Security
 
-If you discover any security related issues, please email inasyrov@ya.ru instead of using the issue tracker.
-
-## Credits
-
-- [Evgenii Nasyrov](https://github.com/nasyrov)
-- [All Contributors](../../contributors)
+If you discover any security related issues, please raise an issue in the tracker.
 
 ## License
 
