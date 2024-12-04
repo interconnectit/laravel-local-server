@@ -26,7 +26,7 @@ class StartSubcommand extends Subcommand
 
         $siteUrl = sprintf('http://%s.localtest.me/', $this->getProjectName());
         $databaseUrl = sprintf('http://phpmyadmin.%s.localtest.me/', $this->getProjectName());
-        $mailhogUrl = sprintf('http://mailhog.%s.localtest.me/', $this->getProjectName());
+        $mailhogUrl = sprintf('http://mailpit.%s.localtest.me/', $this->getProjectName());
 
         $output->writeln('');
         $output->writeln('<info>Your local server is ready!</>');

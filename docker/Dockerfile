@@ -23,16 +23,19 @@ FROM php:8.2-fpm-alpine as backend
 
 WORKDIR /code
 
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS imagemagick-dev
+RUN apk add --no-cache --virtual .persistent-deps icu freetype libjpeg-turbo libpng zlib
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS icu-dev freetype-dev libjpeg-turbo-dev libpng-dev zlib-dev
 
 RUN apk add icu-dev
 
-RUN docker-php-ext-install bcmath opcache pdo_mysql pcntl exif
+RUN docker-php-ext-install bcmath opcache pdo_mysql gd pcntl exif intl
+
+RUN	docker-php-ext-configure gd --with-freetype --with-jpeg
 
 RUN docker-php-ext-configure exif
 RUN docker-php-ext-enable exif
 
-RUN docker-php-ext-configure intl && docker-php-ext-install intl
+RUN docker-php-ext-configure intl
 RUN docker-php-ext-enable intl
 
 RUN docker-php-ext-configure pcntl
@@ -40,10 +43,6 @@ RUN docker-php-ext-enable pcntl
 
 RUN pear update-channels
 RUN pecl channel-update pecl.php.net
-
-RUN pecl install imagick
-RUN docker-php-ext-enable imagick
-RUN apk add --no-cache --virtual .imagick-runtime-deps imagemagick
 
 RUN pecl install redis
 RUN docker-php-ext-enable redis

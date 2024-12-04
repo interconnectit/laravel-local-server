@@ -1,4 +1,4 @@
-version: '2.4'
+version: '3.8'
 
 services:
     proxy:
@@ -67,7 +67,7 @@ services:
                 condition: service_healthy
             redis:
                 condition: service_healthy
-            mailhog:
+            mailpit:
                 condition: service_started
         labels:
             traefik.enable: false
@@ -87,7 +87,7 @@ services:
                 condition: service_healthy
             redis:
                 condition: service_healthy
-            mailhog:
+            mailpit:
                 condition: service_started
         labels:
             traefik.enable: false
@@ -111,9 +111,9 @@ services:
             traefik.frontend.priority: 2
 
     mysql:
-        image: mysql:8.0
+        image: mysql:8.4
         container_name: ${COMPOSE_PROJECT_NAME:-default}-mysql
-        command: --default-authentication-plugin=mysql_native_password
+        command: ["mysqld", "--mysql-native-password=ON"]
         environment:
             MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
             MYSQL_DATABASE: laravel
@@ -138,20 +138,31 @@ services:
         labels:
             traefik.enable: false
 
-    mailhog:
-        image: mailhog/mailhog
-        container_name: ${COMPOSE_PROJECT_NAME:-default}-mailhog
+    mailpit:
+        image: axllent/mailpit:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-default}-mailpit
         networks:
             - default
-            - laravel
+        restart: unless-stopped
+        volumes:
+            - mailpit-data:/data
+        ports:
+            - 8025:8025 # web ui
+            - 1025:1025 # smtp server
+        environment:
+            MP_MAX_MESSAGES: 5000
+            MP_DATABASE: /data/mailpit.db
+            MP_SMTP_AUTH_ACCEPT_ANY: 1
+            MP_SMTP_AUTH_ALLOW_INSECURE: 1
         labels:
             traefik.port: 8025
             traefik.docker.network: laravel
-            traefik.frontend.rule: Host:mailhog.${COMPOSE_PROJECT_NAME:-default}.localtest.me
+            traefik.frontend.rule: Host:mailpit.${COMPOSE_PROJECT_NAME:-default}.localtest.me
             traefik.frontend.priority: 3
 
 volumes:
     mysql-data:
+    mailpit-data:
 
 networks:
     laravel:
