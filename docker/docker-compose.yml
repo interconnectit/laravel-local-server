@@ -143,6 +143,7 @@ services:
         container_name: ${COMPOSE_PROJECT_NAME:-default}-mailpit
         networks:
             - default
+            - laravel
         restart: unless-stopped
         volumes:
             - mailpit-data:/data
@@ -158,7 +159,7 @@ services:
             traefik.port: 8025
             traefik.docker.network: laravel
             traefik.frontend.rule: Host:mailpit.${COMPOSE_PROJECT_NAME:-default}.localtest.me
-            traefik.frontend.priority: 3
+            traefik.frontend.priority: 4
 
 volumes:
     mysql-data:
