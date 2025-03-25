@@ -19,7 +19,7 @@ COPY conf/default.conf /etc/nginx/conf.d
 #
 # Backend
 #
-FROM php:8.2-fpm-alpine as backend
+FROM php:8.3-fpm-alpine as backend
 
 WORKDIR /code
 
@@ -57,7 +57,7 @@ COPY conf/opcache.ini /usr/local/etc/php/conf.d
 #
 # Artisan
 #
-FROM php:8.2-cli-alpine as artisan
+FROM php:8.3-cli-alpine as artisan
 
 WORKDIR /code
 
