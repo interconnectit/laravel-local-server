@@ -1,18 +1,25 @@
 #
 # Proxy
 #
-FROM traefik:alpine as proxy
+FROM traefik:3.6.2 as proxy
 
 WORKDIR /code
 
 COPY conf/traefik.toml /etc/traefik
 
+RUN set -ex \
+        && mkdir -p /etc/traefik/ssl \
+        && wget -q -O mkcert https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64 \
+        && chmod +x mkcert \
+        && ./mkcert -install \
+        && ./mkcert -cert-file /etc/traefik/ssl/default.crt -key-file /etc/traefik/ssl/default.key localhost "*.localhost" 127.0.0.1 ::1 localtest.me "*.localtest.me"
+
+# COPY conf/traefik.toml /etc/traefik/traefik.toml
+
 #
 # Frontend
 #
-FROM nginx:alpine as frontend
-
-WORKDIR /code
+FROM nginx:1.27-alpine as frontend
 
 COPY conf/default.conf /etc/nginx/conf.d
 
