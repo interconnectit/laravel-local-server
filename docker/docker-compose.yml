@@ -6,15 +6,22 @@ services:
             context: .
             target: proxy
         container_name: ${COMPOSE_PROJECT_NAME:-default}-proxy
+        command:
+            - '--api.insecure=true'
+            - '--providers.docker=true'
+            - '--entrypoints.web.address=:80'
+            - '--entrypoints.websecure.address=:443'
+            - '--entrypoints.websecure.http.tls=true'
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         ports:
             - 80:80
             - 8080:8080
+            - 443:443
         networks:
             - laravel
         labels:
-            traefik.enable: false
+            - "traefik.enable=false"
 
     frontend:
         build:
@@ -31,9 +38,10 @@ services:
             backend:
                 condition: service_started
         labels:
-            traefik.docker.network: laravel
-            traefik.frontend.rule: HostRegexp:${COMPOSE_PROJECT_NAME:-default}.localtest.me,{subdomain:[a-z]+}.${COMPOSE_PROJECT_NAME:-default}.localtest.me
-            traefik.frontend.priority: 1
+            - "traefik.docker.network=laravel"
+            - "traefik.http.routers.frontend.rule=Host(`${COMPOSE_PROJECT_NAME:-default}.localtest.me`)"
+            - "traefik.http.routers.frontend.entrypoints=web,websecure"
+            - "traefik.http.routers.frontend.priority=1"
 
     backend:
         build:
@@ -50,7 +58,7 @@ services:
             redis:
                 condition: service_healthy
         labels:
-            traefik.enable: false
+            - "traefik.enable=false"
 
     worker:
         build:
@@ -70,7 +78,7 @@ services:
             mailpit:
                 condition: service_started
         labels:
-            traefik.enable: false
+            - "traefik.enable=false"
 
     scheduler:
         build:
@@ -90,7 +98,7 @@ services:
             mailpit:
                 condition: service_started
         labels:
-            traefik.enable: false
+            - "traefik.enable=false"
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
@@ -106,9 +114,10 @@ services:
             mysql:
                 condition: service_healthy
         labels:
-            traefik.docker.network: laravel
-            traefik.frontend.rule: Host:phpmyadmin.${COMPOSE_PROJECT_NAME:-default}.localtest.me
-            traefik.frontend.priority: 2
+            - "traefik.docker.network=laravel"
+            - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.${COMPOSE_PROJECT_NAME:-default}.localtest.me`)"
+            - "traefik.http.routers.phpmyadmin.entrypoints=web"
+            - "traefik.http.routers.phpmyadmin.priority=2"
 
     mysql:
         image: mysql:8.4
@@ -128,7 +137,7 @@ services:
         healthcheck:
             test: mysqladmin ping
         labels:
-            traefik.enable: false
+            - "traefik.enable=false"
 
     redis:
         image: redis:alpine
@@ -138,7 +147,7 @@ services:
         healthcheck:
             test: redis-cli ping
         labels:
-            traefik.enable: false
+            - "traefik.enable=false"
 
     mailpit:
         image: axllent/mailpit:latest
@@ -158,10 +167,10 @@ services:
             MP_SMTP_AUTH_ACCEPT_ANY: 1
             MP_SMTP_AUTH_ALLOW_INSECURE: 1
         labels:
-            traefik.port: 8025
-            traefik.docker.network: laravel
-            traefik.frontend.rule: Host:mailpit.${COMPOSE_PROJECT_NAME:-default}.localtest.me
-            traefik.frontend.priority: 4
+            - "traefik.docker.network=laravel"
+            - "traefik.http.services.mailpit.loadbalancer.server.port=8025"
+            - "traefik.http.routers.mailpit.rule=Host(`mailpit.${COMPOSE_PROJECT_NAME:-default}.localtest.me`)"
+            - "traefik.http.routers.mailpit.priority=4"
 
 volumes:
     mysql-data:

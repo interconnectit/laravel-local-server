@@ -1,16 +1,16 @@
 #
 # Proxy
 #
-FROM traefik:alpine as proxy
+FROM traefik:3.6.2 AS proxy
 
 WORKDIR /code
 
-COPY conf/traefik.toml /etc/traefik
+#COPY conf/traefik.toml /etc/traefik
 
 #
 # Frontend
 #
-FROM nginx:alpine as frontend
+FROM nginx:1.27-alpine AS frontend
 
 WORKDIR /code
 
@@ -19,7 +19,7 @@ COPY conf/default.conf /etc/nginx/conf.d
 #
 # Backend
 #
-FROM php:8.2-fpm-alpine as backend
+FROM php:8.2-fpm-alpine AS backend
 
 WORKDIR /code
 
@@ -57,7 +57,7 @@ COPY conf/opcache.ini /usr/local/etc/php/conf.d
 #
 # Artisan
 #
-FROM php:8.2-cli-alpine as artisan
+FROM php:8.2-cli-alpine AS artisan
 
 WORKDIR /code
 
