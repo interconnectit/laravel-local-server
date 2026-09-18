@@ -5,7 +5,7 @@ namespace InterconnectIt\LaravelLocalServer\Subcommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DestroySubcommand extends Subcommand
+class DownSubcommand extends Subcommand
 {
     const COMMAND = 'docker-compose down --remove-orphans';
 
